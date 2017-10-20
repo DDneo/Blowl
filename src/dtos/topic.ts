@@ -9,6 +9,7 @@ export class Topic {
     like : number;
     date : Date;
     nbComm:number;
+    is_fun : number;
     listComment : Array<Comment>;
 
     constructor (id : number,summary:string,title : string){

@@ -33,8 +33,12 @@ export class topicService {
 
     }
 
-    async persiteTopic(topic: Topic) {
-        //call DAO to persist Topic
+    persiteTopic(topic: Topic,http:Http) {
+        this.insertTopic(http,topic);
+    }
+
+    updateTopic(http:Http,nbLike:number,id:number){
+        this.updateTopicQuery(http,nbLike,id);
     }
 
     daoRequestRetrieveTopic(http:Http,id:number) : Promise<Array<Object>>{
@@ -44,6 +48,16 @@ export class topicService {
 
     daoRequestRetrieveComment(http:Http,id:number) : Promise<Array<Object>>{
         let query = "select comm.*,rate.RATING from t_comment comm join t_rating_comment rate on rate.FK_COMMENT_ID=comm.COMMENT_ID where comm.T_TOPIC_TOPIC_ID="+id;
+        return http.get("http://localhost:3000/?query="+query).toPromise().then(response=> response.json());
+    }
+
+    insertTopic(http:Http,topic:Topic) : Promise<Array<Object>>{
+        let query = "INSERT INTO t_topic ('TITLE', 'SUMMARY', 'IS_FUN') VALUES (\""+topic.title+"\",\""+topic.summary+"\","+topic.is_fun+")";
+        return http.get("http://localhost:3000/?query="+query).toPromise().then(response=> response.json());
+    }
+
+    updateTopicQuery(http:Http,nbLik:number,id:number) : Promise<Array<Object>>{
+        let query = "UPDATE t_rating_topic SET RATING="+nbLik+" WHERE T_TOPIC_TOPIC_ID="+id;
         return http.get("http://localhost:3000/?query="+query).toPromise().then(response=> response.json());
     }
 }
