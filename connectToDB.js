@@ -11,11 +11,14 @@ var pool      =    mysql.createPool({
     debug    :  false
 });
 
+var query = new Object(); // or var map = {};
+query[0] = "select * from t_user where email=";
+
+
 function handle_database(req,res) {
    
     pool.getConnection(function(err,connection){
-      
-      console.log(JSON.stringify(req.query));
+      console.log(req.query["query"]);
         if (err) {
           res.json({"code" : 100, "status" : "Error in connection database"});
           return;
@@ -23,10 +26,10 @@ function handle_database(req,res) {
 
         console.log('connected as id ' + connection.threadId);
        
-        connection.query("select * from t_user",function(err,rows){
+        connection.query(req.query["query"],function(err,rows){
             connection.release();
             if(!err) {
-                console.log("return data");
+                console.log("return data "+rows);
                 res.json(rows);
             }          
         });

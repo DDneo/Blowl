@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { DetailPage } from '../detail/detail';
+import {Http} from '@angular/http';
+import {HomeService} from '../../services/homeService';
 
 @Component({
   selector: 'page-home',
@@ -8,9 +10,16 @@ import { DetailPage } from '../detail/detail';
 })
 export class HomePage {
   //public dataApp: any[];
-  constructor(public navCtrl: NavController) {
-
+  constructor(public navCtrl: NavController,http:Http) {
+    let truc = this.retrieveData("FUN",http);
+    
   }
+  async retrieveData(category:string,http:Http){
+    let homeservice = new HomeService();
+    let result= await homeservice.retrieveTopicByCategory(category,http);
+    return result;
+  }
+
   private dataApp;
   ngOnInit() {
     this.dataApp = [{
