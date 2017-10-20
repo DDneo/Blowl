@@ -1,54 +1,54 @@
-import {Topic} from "../dtos/topic"
-import {Http} from '@angular/http';
+import { Topic } from "../dtos/topic"
+import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
 
 export class HomeService {
 
     //DAO to determine
-    
-        async retrieveTopicByCategory(category : string,http:Http) {
 
+    async retrieveTopicByCategory(category: string, http: Http) {
 
-           /*  var response = http.get("http://localhost:3000")
-            .map(res=>res.json())
-            .subscribe(data => 
-              console.log("hereeeee"+JSON.stringify(data)),
-              err => console.log(JSON.stringify(err))
-            ); */
-            var is_fun;
-            if (category==="FUN"){
-                is_fun=0
-            }
-            else {
-                is_fun=1;
-            }
-            var listTopics: Array<Topic>;
-            listTopics=[];
+        var is_fun;
+        if (category === "FUN") {
+            is_fun = 0
+        }
+        else {
+            is_fun = 1;
+        }
+        var listTopics: Array<Topic>;
+        listTopics = [];
 
-            let test=await this.daoRequest(http,is_fun);
-            test.forEach(element => {
-                console.log(element["TITLE"]);
-                let topic = new Topic(element["TOPIC_ID"],element["SUMMARY"],element["TITLE"]);
-                listTopics.push(topic);
-
-            });
-           //console.log(test);
-            //console.log(test[0]["TITLE"]);
-           //console.log("result "+JSON.stringify(test))
-           //test = JSON.parse((JSON.stringify(test).replace("[","").replace("]","")));
-           //console.log(test["TITLE"]);
-
+        let test = await this.daoRequest(http, is_fun);
+        test.forEach(element => {
+            console.log(JSON.stringify(element));
+            let topic = new Topic(element["TOPIC_ID"], element["SUMMARY"], element["TITLE"]);
+            topic.like=element["RATING"];
            
 
-           
-            //call dao to retrieve data with category
+            listTopics.push(topic);
             
-            return listTopics;
+        });
 
+        for (var index = 0; index < listTopics.length; index++) {
+            var element = listTopics[index];
+            let nbComment = await this.daoRequestNbComment(http,element.id);
+            element.nbComm=nbComment["nbComment"];
+            
         }
+        console.log(JSON.stringify(listTopics));
+        
+        return listTopics;
 
-        daoRequest(http:Http,is_fun:string) : Promise<Array<Object>>{
-            return http.get("http://localhost:3000/?query=select * from t_topic where is_fun="+is_fun).toPromise().then(response=> response.json());
-        }
+    }
+
+    daoRequest(http: Http, is_fun: string): Promise<Array<Object>> {
+        let query ="select topic.*,rate.RATING from t_topic topic join t_rating_topic rate on rate.T_TOPIC_TOPIC_ID=topic.TOPIC_ID where is_fun="+is_fun;
+        return http.get("http://localhost:3000/?query=" + query).toPromise().then(response => response.json());
+    }
+
+    daoRequestNbComment(http: Http,id: number): Promise<number> {
+        let query ="select count(*) as nbComment from t_comment where T_TOPIC_TOPIC_ID="+id;
+        return http.get("http://localhost:3000/?query=" + query).toPromise().then(response => response.json());
+    }
 }
