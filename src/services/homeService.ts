@@ -21,7 +21,7 @@ export class HomeService {
 
         let test = await this.daoRequest(http, is_fun);
         test.forEach(element => {
-            console.log(JSON.stringify(element));
+            //console.log(JSON.stringify(element));
             let topic = new Topic(element["TOPIC_ID"], element["SUMMARY"], element["TITLE"]);
             topic.like=element["RATING"];
            
@@ -33,10 +33,13 @@ export class HomeService {
         for (var index = 0; index < listTopics.length; index++) {
             var element = listTopics[index];
             let nbComment = await this.daoRequestNbComment(http,element.id);
-            element.nbComm=nbComment["nbComment"];
+            element.nbComm=nbComment[0]["nbComment"];
+            if (element.nbComm==undefined){
+                element.nbComm=0;
+            }
             
         }
-        console.log(JSON.stringify(listTopics));
+        //console.log(JSON.stringify(listTopics));
         
         return listTopics;
 

@@ -1,43 +1,43 @@
 <ion-header>
   
     <ion-title>
-      Ionic Blank
+      Home Page
     </ion-title>
   
 </ion-header>
 
 <ion-content  padding>
-  <ion-card *ngFor="let test of dataApp; let i = index" (click)="goTodetail(i)">
+  <ion-card *ngFor="let test of dataApp; let i = index" (click)="goTodetail(test)">
   <ion-item>
       <ion-avatar item-start>
-          <!-- <img src="../assets/Super-Mario-Avatar.jpg"> -->
+          <img src="/../assets/icon/mario.png">
         </ion-avatar>
         <h2>{{test.title}}</h2>
         <p>{{test.date}}</p>
     
   </ion-item>
 
-<!-- <ion-img style="margin-left: 5%;" width="260" height="180" src="../assets/Papermario.PNG"></ion-img> -->
+<!-- <ion-img style="margin-left: 5%;" width="50" height="50" src="/../assets/icon/mario.png"></ion-img> -->
 
   <ion-card-content>
-      <p>{{test.descriptif}}</p>
+      <p>{{test.summary}}</p>
     </ion-card-content>
     <ion-row>
         <ion-col>
           <button  ion-button icon-left clear small>
             <ion-icon name="thumbs-up"></ion-icon>
-            <div>12 Likes</div>
+            <div>{{test.like}}</div>
           </button>
         </ion-col>
         <ion-col>
           <button ion-button icon-left clear small>
             <ion-icon name="text"></ion-icon>
-            <div>4 Comments</div>
+            <div>{{test.nbComm}}</div>
           </button>
         </ion-col>
         <ion-col center text-center>
           <ion-note>
-            11h ago
+            {{i}}h ago 
           </ion-note>
         </ion-col>
       </ion-row>
@@ -69,38 +69,22 @@
       </ion-card-content>
   </ion-card> -->
 
-  <button style="width: 30%;margin-left: 2%;" ion-button>
+  <button style="width: 30%;margin-left: 2%;" ion-button (click)="clickOnBiz()">
       <ion-icon name="Biz"></ion-icon>
       Biz
     </button>
 
-    <button style="width: 30%;margin-left: 35%;" ion-button>
+    <button style="width: 30%;margin-left: 35%;" ion-button (click)="clickOnFun()">
         Fun
         <ion-icon name="Fun"></ion-icon>
       </button>
       
-  <!-- <ion-item>
-    <ion-label>Arya Stark</ion-label>
-    
-  </ion-item>
-  <ion-item>
-    <ion-label>BlaBla</ion-label>
-    
-  </ion-item>
-  <ion-item>
-    <ion-label>BlaBla</ion-label>
-    
-  </ion-item>
-  <ion-item>
-    <ion-label>BlaBla</ion-label>
-    
-  </ion-item>
-  <ion-row style="position: absolute;bottom: 10%;width: 100%;">
-    <ion-col col-6>
-      <button style="width: 100%" ion-button color="primaire">Biz</button>
-    </ion-col>
-    <ion-col col-6>
-      <button style="width: 100%" ion-button color="secondary">Fun</button>
-    </ion-col>
-  </ion-row> -->
+      <ion-fab left bottom>
+          <button ion-fab color="light"><ion-icon name="arrow-dropleft"></ion-icon></button>
+          <ion-fab-list side="top">
+            <button ion-fab (click)="goToCreate()"><ion-icon name="md-document"></ion-icon></button>
+            <button ion-fab (click)="goToSeach()"><ion-icon name="md-search"></ion-icon></button>
+            <button ion-fab (click)="goToProfile()"><ion-icon name="md-person" ></ion-icon></button>
+          </ion-fab-list>
+        </ion-fab>
 </ion-content>

@@ -7,12 +7,64 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>detail</ion-title>
+    <ion-title>Detail</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
+  <ion-card>
+    <img src="/../assets/icon/mario.png" />
+    <ion-card-content>
+      <ion-card-title>
+        <b>{{currentTopic.title}}</b>
+      </ion-card-title>
+      <hr>
+      <p>
+        {{currentTopic.summary}}
+      </p>
+    </ion-card-content>
+  </ion-card>
+  <ion-row>
+    <ion-col>
+      <button ion-button icon-left clear small [disabled]="!isenabled" (click)="plusOne()">
+        <ion-icon name="thumbs-up"></ion-icon>
+        <div>{{currentTopic.like}}</div>
+      </button>
+    </ion-col>
+    <ion-col>
+      <button ion-button icon-left clear small (click)="seeComment()">
+        <ion-icon name="text"></ion-icon>
+        <div>{{currentTopic.nbComm}}</div>
+      </button>
+    </ion-col>
+  </ion-row>
+
+  <ion-list *ngFor="let test of currentTopic.listComment; let i = index">
+    <ion-card>
+      <ion-card-header>
+        <b>User</b>
+      </ion-card-header>
+      <hr>
+      <ion-card-content>
+        {{test.commentary}}
+      </ion-card-content>
+    </ion-card>
+
+  </ion-list>
+
+  <button ion-button round [disabled]="!disableCommentButton" (click)="showCommentZone()">Add Comment</button>
+  <ion-card id='commentZone' [hidden]="!seeCommentZone">
+    <ion-card-header>
+      <b>User</b>
+    </ion-card-header>
+    <hr>
+    <ion-card-content>
+      <ion-input [(ngModel)]="commentary" type="text" value=""></ion-input>
+    </ion-card-content>
+    <button ion-button round (click)="saveComment()">OK!</button>
+  </ion-card>
+
 
 </ion-content>
