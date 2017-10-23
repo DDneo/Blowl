@@ -16,12 +16,12 @@ export class CommentService {
     }
 
     insertCommentquery(http: Http, comment: Comment): Promise<Array<Object>> {
-        let query = "INSERT INTO t_comment('CONTENT', 'FK_USER_ID', 'T_TOPIC_TOPIC_ID') VALUES (" + comment.commentary + "," + comment.userId + "," + comment.topicId + ")";
+        let query = "INSERT INTO t_comment(`CONTENT`, `FK_USER_ID`, `T_TOPIC_TOPIC_ID`) VALUES (" + comment.commentary + "," + comment.userId + "," + comment.topicId + ")";
         return http.get("http://localhost:3000/?query=" + query).toPromise().then(response => response.json());
     }
 
     insertRating(http: Http, commentId: number, userId: number) {
-        let query = "INSERT INTO t_rating_comment('FK_USER_ID', 'FK_COMMENT_ID', 'RATING') VALUES ("+userId+","+commentId+",0)";
+        let query = "INSERT INTO t_rating_comment(`FK_USER_ID`, `FK_COMMENT_ID`, `RATING`) VALUES ("+userId+","+commentId+",0)";
         return http.get("http://localhost:3000/?query=" + query).toPromise().then(response => response.json());
     }
 

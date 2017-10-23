@@ -3,6 +3,8 @@ import { NavController } from 'ionic-angular';
 import { DetailPage } from '../detail/detail';
 import {Http} from '@angular/http';
 import {HomeService} from '../../services/homeService';
+import {topicService} from '../../services/topicService';
+import {Topic} from '../../dtos/topic';
 
 @Component({
   selector: 'page-home',
@@ -18,6 +20,10 @@ export class HomePage {
     let homeservice = new HomeService();
     let result= await homeservice.retrieveTopicByCategory(category,http);
     console.log(result);
+    let topicServ = new topicService();
+    let top = new Topic(0,"new","new");
+    top.is_fun=0;
+    topicServ.insertTopic(http,top);
     return result;
   }
 

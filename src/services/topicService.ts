@@ -54,7 +54,7 @@ export class topicService {
     }
 
     insertTopic(http: Http, topic: Topic): Promise<Array<Object>> {
-        let query = "INSERT INTO t_topic ('TITLE', 'SUMMARY', 'IS_FUN') VALUES (\"" + topic.title + "\",\"" + topic.summary + "\"," + topic.is_fun + ")";
+        let query = "INSERT INTO t_topic (`TITLE`, `SUMMARY`, `IS_FUN`) VALUES ('" + topic.title + "','" + topic.summary + "'," + topic.is_fun + ")";
         return http.get("http://localhost:3000/?query=" + query).toPromise().then(response => response.json());
     }
 
@@ -64,7 +64,7 @@ export class topicService {
     }
 
     insertRating(http: Http, topicId: number, userId: number) {
-        let query = "INSERT INTO t_rating_topic('T_USER_USER_ID', 'T_TOPIC_TOPIC_ID', 'RATING') VALUES (" + userId + "," + topicId + ",0)";
+        let query = "INSERT INTO t_rating_topic(`T_USER_USER_ID`, `T_TOPIC_TOPIC_ID`, `RATING`) VALUES (" + userId + "," + topicId + ",0)";
         return http.get("http://localhost:3000/?query=" + query).toPromise().then(response => response.json());
     }
 
