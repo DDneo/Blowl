@@ -5,9 +5,10 @@ import 'rxjs/add/operator/toPromise';
 
 export class CommentService {
 
-    inserComment(http: Http, comment: Comment,userId:number) {
+    async inserComment(http: Http, comment: Comment,userId:number) {
         this.insertCommentquery(http, comment);
-        this.insertRating(http,comment.id,userId);
+        let id = await this.selectLastId(http);
+        this.insertRating(http,id["id"],userId);
     }
 
     updateComment(http: Http, comment: Comment) {
@@ -26,6 +27,11 @@ export class CommentService {
 
     updateCommentQuery(http: Http, comment: Comment): Promise<Array<Object>> {
         let query = "UPDATE t_rating_comment SET RATING=" + comment.rate + " WHERE FK_COMMENT_ID=" + comment.id;
+        return http.get("http://localhost:3000/?query=" + query).toPromise().then(response => response.json());
+    }
+
+    selectLastId(http: Http): Promise<number> {
+        let query = "SELECT max(COMMENT_ID)as id from t_comment";
         return http.get("http://localhost:3000/?query=" + query).toPromise().then(response => response.json());
     }
 }

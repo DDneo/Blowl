@@ -7,54 +7,60 @@ import 'rxjs/add/operator/toPromise';
 export class topicService {
 
 
-    async retrieveTopicById(id: number,http:Http) {
+    async retrieveTopicById(id: number, http: Http) {
         //retrieve topic with DAO 
         //first retrieve topic
-        let result = await this.daoRequestRetrieveTopic(http,id);
+        let result = await this.daoRequestRetrieveTopic(http, id);
         let topic = new Topic(result[0]["TOPIC_ID"], result[0]["SUMMARY"], result[0]["TITLE"]);
-        topic.like=result[0]["RATING"];
+        topic.like = result[0]["RATING"];
 
-        
+
         //retrieve comment
-        let resultComment = await this.daoRequestRetrieveComment(http,id);
+        let resultComment = await this.daoRequestRetrieveComment(http, id);
         var listComments: Array<Comment>;
         resultComment.forEach(element => {
-            let  comment = new Comment();
-            comment.id=element["COMMENT_ID"];
-            comment.commentary=element["CONTENT"];
-            comment.topicId=topic.id;
-            comment.userId=element["FK_USER_ID"];
-            comment.rate= element["RATING"];
+            let comment = new Comment();
+            comment.id = element["COMMENT_ID"];
+            comment.commentary = element["CONTENT"];
+            comment.topicId = topic.id;
+            comment.userId = element["FK_USER_ID"];
+            comment.rate = element["RATING"];
             listComments.push(comment);
         });
-        topic.listComment=listComments;
-        
+        topic.listComment = listComments;
+
         return topic;
 
     }
 
-    persiteTopic(topic: Topic,http:Http,userId:number) {
-        this.insertTopic(http,topic);
-        this.insertRating(http,userId,topic.id);
+    async persiteTopic(topic: Topic, http: Http, userId: number) {
+        this.insertTopic(http, topic);
+        let id= await this.selectLastId(http);
+        this.insertRating(http, userId, id["id"]);
     }
 
-    updateTopic(http:Http,nbLike:number,id:number){
-        this.updateTopicQuery(http,nbLike,id);
+    updateTopic(http: Http, nbLike: number, id: number) {
+        this.updateTopicQuery(http, nbLike, id);
     }
 
-    daoRequestRetrieveTopic(http:Http,id:number) : Promise<Array<Object>>{
-        let query = "select topic.*,rate.RATING from t_topic topic join t_rating_topic rate on rate.T_TOPIC_TOPIC_ID=topic.TOPIC_ID where topic.TOPIC_ID="+id;
-        return http.get("http://localhost:3000/?query="+query).toPromise().then(response=> response.json());
+    daoRequestRetrieveTopic(http: Http, id: number): Promise<Array<Object>> {
+        let query = "select topic.*,rate.RATING from t_topic topic join t_rating_topic rate on rate.T_TOPIC_TOPIC_ID=topic.TOPIC_ID where topic.TOPIC_ID=" + id;
+        return http.get("http://localhost:3000/?query=" + query).toPromise().then(response => response.json());
     }
 
-    daoRequestRetrieveComment(http:Http,id:number) : Promise<Array<Object>>{
-        let query = "select comm.*,rate.RATING from t_comment comm join t_rating_comment rate on rate.FK_COMMENT_ID=comm.COMMENT_ID where comm.T_TOPIC_TOPIC_ID="+id;
-        return http.get("http://localhost:3000/?query="+query).toPromise().then(response=> response.json());
+    daoRequestRetrieveComment(http: Http, id: number): Promise<Array<Object>> {
+        let query = "select comm.*,rate.RATING from t_comment comm join t_rating_comment rate on rate.FK_COMMENT_ID=comm.COMMENT_ID where comm.T_TOPIC_TOPIC_ID=" + id;
+        return http.get("http://localhost:3000/?query=" + query).toPromise().then(response => response.json());
     }
 
-    insertTopic(http:Http,topic:Topic) : Promise<Array<Object>>{
-        let query = "INSERT INTO t_topic ('TITLE', 'SUMMARY', 'IS_FUN') VALUES (\""+topic.title+"\",\""+topic.summary+"\","+topic.is_fun+")";
-        return http.get("http://localhost:3000/?query="+query).toPromise().then(response=> response.json());
+    insertTopic(http: Http, topic: Topic): Promise<Array<Object>> {
+        let query = "INSERT INTO t_topic ('TITLE', 'SUMMARY', 'IS_FUN') VALUES (\"" + topic.title + "\",\"" + topic.summary + "\"," + topic.is_fun + ")";
+        return http.get("http://localhost:3000/?query=" + query).toPromise().then(response => response.json());
+    }
+
+    selectLastId(http: Http): Promise<number> {
+        let query = "select max(topic_id) as id from t_topic";
+        return http.get("http://localhost:3000/?query=" + query).toPromise().then(response => response.json());
     }
 
     insertRating(http: Http, topicId: number, userId: number) {
@@ -62,8 +68,8 @@ export class topicService {
         return http.get("http://localhost:3000/?query=" + query).toPromise().then(response => response.json());
     }
 
-    updateTopicQuery(http:Http,nbLik:number,id:number) : Promise<Array<Object>>{
-        let query = "UPDATE t_rating_topic SET RATING="+nbLik+" WHERE T_TOPIC_TOPIC_ID="+id;
-        return http.get("http://localhost:3000/?query="+query).toPromise().then(response=> response.json());
+    updateTopicQuery(http: Http, nbLik: number, id: number): Promise<Array<Object>> {
+        let query = "UPDATE t_rating_topic SET RATING=" + nbLik + " WHERE T_TOPIC_TOPIC_ID=" + id;
+        return http.get("http://localhost:3000/?query=" + query).toPromise().then(response => response.json());
     }
 }
