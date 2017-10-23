@@ -33,8 +33,9 @@ export class topicService {
 
     }
 
-    persiteTopic(topic: Topic,http:Http) {
+    persiteTopic(topic: Topic,http:Http,userId:number) {
         this.insertTopic(http,topic);
+        this.insertRating(http,userId,topic.id);
     }
 
     updateTopic(http:Http,nbLike:number,id:number){
@@ -54,6 +55,11 @@ export class topicService {
     insertTopic(http:Http,topic:Topic) : Promise<Array<Object>>{
         let query = "INSERT INTO t_topic ('TITLE', 'SUMMARY', 'IS_FUN') VALUES (\""+topic.title+"\",\""+topic.summary+"\","+topic.is_fun+")";
         return http.get("http://localhost:3000/?query="+query).toPromise().then(response=> response.json());
+    }
+
+    insertRating(http: Http, topicId: number, userId: number) {
+        let query = "INSERT INTO t_rating_topic('T_USER_USER_ID', 'T_TOPIC_TOPIC_ID', 'RATING') VALUES (" + userId + "," + topicId + ",0)";
+        return http.get("http://localhost:3000/?query=" + query).toPromise().then(response => response.json());
     }
 
     updateTopicQuery(http:Http,nbLik:number,id:number) : Promise<Array<Object>>{
