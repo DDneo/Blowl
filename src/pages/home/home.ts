@@ -17,6 +17,7 @@ export class HomePage {
   async retrieveData(category:string,http:Http){
     let homeservice = new HomeService();
     let result= await homeservice.retrieveTopicByCategory(category,http);
+    console.log(result);
     return result;
   }
 
