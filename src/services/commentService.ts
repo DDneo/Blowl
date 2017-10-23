@@ -5,10 +5,14 @@ import 'rxjs/add/operator/toPromise';
 
 export class CommentService {
 
-    async inserComment(http: Http, comment: Comment,userId:number) {
+    async inserComment(http: Http, comment: Comment, userId: number) {
         this.insertCommentquery(http, comment);
+
+    }
+
+    async insertRating(http: Http, userId: number) {
         let id = await this.selectLastId(http);
-        this.insertRating(http,id["id"],userId);
+        this.insertRatingQuery(http, id[0]["id"], userId);
     }
 
     updateComment(http: Http, comment: Comment) {
@@ -20,8 +24,8 @@ export class CommentService {
         return http.get("http://localhost:3000/?query=" + query).toPromise().then(response => response.json());
     }
 
-    insertRating(http: Http, commentId: number, userId: number) {
-        let query = "INSERT INTO t_rating_comment(`FK_USER_ID`, `FK_COMMENT_ID`, `RATING`) VALUES ("+userId+","+commentId+",0)";
+    insertRatingQuery(http: Http, commentId: number, userId: number): Promise<Array<Object>> {
+        let query = "INSERT INTO t_rating_comment(`FK_USER_ID`, `FK_COMMENT_ID`, `RATING`) VALUES (" + userId + "," + commentId + ",0)";
         return http.get("http://localhost:3000/?query=" + query).toPromise().then(response => response.json());
     }
 

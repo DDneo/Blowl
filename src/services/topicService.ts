@@ -34,9 +34,20 @@ export class topicService {
     }
 
     async persiteTopic(topic: Topic, http: Http, userId: number) {
-        this.insertTopic(http, topic);
+        let tot=this.insertTopic(http, topic);
+        console.log("after insert");
+        //let id= await this.selectLastId(http);
+        //console.log(id);
+       // console.log("persist rating");
+        //this.insertRating(http, userId, id["id"]);
+        return;
+    }
+
+    async persistRating(http: Http,userId:number){
         let id= await this.selectLastId(http);
-        this.insertRating(http, userId, id["id"]);
+        console.log(id[0]["id"]);
+        console.log("persist rating" + userId);
+        this.insertRating(http, userId, id[0]["id"]);
     }
 
     updateTopic(http: Http, nbLike: number, id: number) {
@@ -63,7 +74,7 @@ export class topicService {
         return http.get("http://localhost:3000/?query=" + query).toPromise().then(response => response.json());
     }
 
-    insertRating(http: Http, topicId: number, userId: number) {
+    insertRating(http: Http,  userId: number,topicId: number): Promise<Array<Object>> {
         let query = "INSERT INTO t_rating_topic(`T_USER_USER_ID`, `T_TOPIC_TOPIC_ID`, `RATING`) VALUES (" + userId + "," + topicId + ",0)";
         return http.get("http://localhost:3000/?query=" + query).toPromise().then(response => response.json());
     }
